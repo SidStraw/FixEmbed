@@ -961,14 +961,11 @@ async def on_message(message):
             link_pattern = r"https?://(?:www\.)?(twitter\.com/\w+/status/\d+|x\.com/\w+/status/\d+|instagram\.com/(?:p|reel)/[\w-]+|reddit\.com/r/\w+/s/\w+|reddit\.com/r/\w+/comments/\w+/\w+|old\.reddit\.com/r/\w+/comments/\w+/\w+|pixiv\.net/(?:en/)?artworks/\d+|threads\.net/@[^/]+/post/[\w-]+|bsky\.app/profile/[^/]+/post/[\w-]+|bilibili\.com/video/[\w]+|b23\.tv/[\w]+)"
             matches = re.findall(link_pattern, message.content)
 
-            # Regex pattern to detect links surrounded by < >
-            surrounded_link_pattern = r"<https?://(?:www\.)?(twitter\.com/\w+/status/\d+|x\.com/\w+/status/\d+|instagram\.com/(?:p|reel)/[\w-]+|reddit\.com/r/\w+/s/\w+|reddit\.com/r/\w+/comments/\w+/\w+|old\.reddit\.com/r/\w+/comments/\w+/\w+|pixiv\.net/(?:en/)?artworks/\d+|threads\.net/@[^/]+/post/[\w-]+|bsky\.app/profile/[^/]+/post/[\w-]+|bilibili\.com/video/[\w]+|b23\.tv/[\w]+)>"
-
             valid_link_found = False
 
             for original_link in matches:
-                # Skip links if they are surrounded by < >
-                if re.search(surrounded_link_pattern, message.content):
+                # Skip this specific link if it is surrounded by < >
+                if re.search(r"<https?://(?:www\.)?" + re.escape(original_link) + r">", message.content):
                     continue  # Skip processing this link
 
                 display_text = ""
