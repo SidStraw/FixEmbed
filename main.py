@@ -57,6 +57,11 @@ SERVICES = {
     }
 }
 
+# Pattern to detect the nofix keyword in messages.
+# When a user includes "!nofix" anywhere in their message, the bot will skip
+# processing that message entirely (no link fixing, no deletion).
+NOFIX_PATTERN = re.compile(r"!nofix\b", re.IGNORECASE)
+
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
 
@@ -933,6 +938,11 @@ async def settings(interaction: discord.Interaction):
 @client.event
 async def on_message(message):
     if message.author == client.user:
+        return
+
+    # Skip processing if the message contains the !nofix keyword
+    if NOFIX_PATTERN.search(message.content):
+        await client.process_commands(message)
         return
 
     guild_id = message.guild.id
